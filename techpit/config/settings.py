@@ -25,7 +25,7 @@ SECRET_KEY = '#r$ajzwqm6j$3(atk^_gjw_oc&!n-#=680e7464rtx5n#l8@#h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://kanban-pk.herokuapp.com/"]
 
 
 # Application definition
@@ -81,6 +81,11 @@ DATABASES = {
     }
 }
 
+# 追記
+import dj_database_url
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -120,6 +125,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# 追記
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 # ログイン後のリダイレクト先
 LOGIN_REDIRECT_URL = "kanban:home"
 # ログアウト後のリダイレクト先
@@ -127,3 +137,13 @@ LOGOUT_REDIRECT_URL = "kanban:index"
 # ログインページ
 LOGIN_URL = "login"
 
+DEBUG = False
+
+try:
+    from config.local_settings import *
+except ImportError:
+    pass
+
+if not DEBUG:
+    import django_heroku
+    django_heroku.settings(locals())
